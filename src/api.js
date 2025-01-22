@@ -1,3 +1,5 @@
+// src/api.js
+
 import mockData from './mock-data';
 
 /**
@@ -28,7 +30,7 @@ export const getEvents = async () => {
 
   if (token) {
     removeQuery();
-    const url = "https://un1axvwmqg.execute-api.us-east-2.amazonaws.com/dev/api/get-events" + "/" + token;
+    const url = "https://un1axvwmqg.execute-api.us-east-2.amazonaws.com/dev/api/get-events/" + token;
     const response = await fetch(url);
     const result = await response.json();
     if (result) {
@@ -82,26 +84,13 @@ const removeQuery = () => {
   }
 };
 
-// getToken without try...catch
-
-// const getToken = async (code) => {
-//   const encodeCode = encodeURIComponent(code);
-//   const response = await fetch(
-//     'YOUR_GET_ACCESS_TOKEN_ENDPOINT' + '/' + encodeCode
-//   );
-//   const { access_token } = await response.json();
-//   access_token && localStorage.setItem("access_token", access_token);
-
-//   return access_token;
-// };
-
 // getToken with try...catch
 
 const getToken = async (code) => {
   try {
     const encodeCode = encodeURIComponent(code);
 
-    const response = await fetch('https://un1axvwmqg.execute-api.us-east-2.amazonaws.com/dev/api/token' + '/' + encodeCode);
+    const response = await fetch('https://un1axvwmqg.execute-api.us-east-2.amazonaws.com/dev/api/token/' + encodeCode);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
