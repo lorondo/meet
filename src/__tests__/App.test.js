@@ -1,8 +1,9 @@
 import React from 'react';
-import { render, within } from '@testing-library/react';
+import { render, within, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { getEvents } from '../api';
 import App from '../App';
+import NumberOfEvents from '../components/NumberOfEvents';
 
 
 describe('<App /> component', () => {
@@ -55,4 +56,22 @@ describe('<App /> integration', () => {
       expect(event.textContent).toContain("Berlin, Germany");
     });
   });
+
+  test('number of events rendered matches the number of events inputted by the user', async () => {
+    const user=userEvent.setup();
+    const AppComponent = render(<App />);
+    const AppDOM = AppComponent.container.firstChild;
+
+    const NumberOfEventsDOM = AppDOM.querySelector('#numberOfEvents');
+    const NumberOfEventsInput = within(NumberOfEventsDOM).queryByRole('textbox');
+
+    await act(async () => {
+      await user.type(NumberOfEventsInput, "{backspace}{backspace}10");
+    });
+
+    await waitFor(() => {
+      expect(NumberOfEventsInput).toHaveValue('10');
+    });
+  });
+
 });

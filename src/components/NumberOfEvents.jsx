@@ -17,7 +17,7 @@ const NumberOfEvents = ({ onNumberChange }) => {
       <input
         type="text"
         className="textbox"
-        placeholder="number of events"
+        placeholder="Number of events"
         value={number} // Controlled component, value is bound to state
         onChange={handleChange} // Calls handleChange on user input
       />
