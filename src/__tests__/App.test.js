@@ -8,9 +8,11 @@ import NumberOfEvents from '../components/NumberOfEvents';
 
 describe('<App /> component', () => {
   let AppDOM;
-  beforeEach(() => {
-    AppDOM = render(<App />).container.firstChild;
-  })
+  beforeEach( async () => {
+    await act(async () => {
+      AppDOM = render(<App />).container.firstChild;
+    });
+  });
   
   test('renders list of events', () => {
     const AppDOM = render(<App />).container.firstChild;

@@ -3,6 +3,7 @@ import CitySearch from './components/CitySearch';
 import EventList from './components/EventList';
 import NumberOfEvents from './components/NumberOfEvents';
 import { extractLocations, getEvents } from './api';
+import { InfoAlert, ErrorAlert } from './components/Alert';
 
 import './App.css';
 
@@ -11,6 +12,8 @@ const App = () => {
   const [currentNOE, setCurrentNOE] = useState(32);
   const [events, setEvents] = useState([]);
   const [currentCity, setCurrentCity] = useState("See all cities");
+  const [infoAlert, setInfoAlert] = useState("");
+  const [errorAlert, setErrorAlert] = useState("");
 
   // Fetch events whenever city or number of events changes
   useEffect(() => {
@@ -20,9 +23,9 @@ const App = () => {
   // Fetch and filter events
   const fetchData = async (noe = currentNOE, city = currentCity) => {
     const allEvents = await getEvents();
-    const filteredEvents = city === "See all cities" ?
+    const filteredEvents = city === "See all cities" ? 
       allEvents :
-      allEvents.filter(event => event.location === city)
+      allEvents.filter(event => event.location === city);
     setEvents(filteredEvents.slice(0, noe)); // Adjusts events based on number
     setAllLocations(extractLocations(allEvents));
   }
@@ -35,11 +38,23 @@ const App = () => {
 
   return (
     <div className="App">
-      <CitySearch allLocations={allLocations} setCurrentCity={setCurrentCity} />
-      <NumberOfEvents onNumberChange={handleNumberChange} />
+      <div className="alerts-container">
+        {infoAlert.length ? <InfoAlert text={infoAlert} /> : null}
+        {errorAlert.length ? <ErrorAlert text={errorAlert} /> : null}
+      </div>
+      <CitySearch
+        allLocations={allLocations}
+        setCurrentCity={setCurrentCity}
+        setInfoAlert={setInfoAlert}
+      />
+      {/* Pass setErrorAlert to NumberOfEvents */}
+      <NumberOfEvents 
+        onNumberChange={handleNumberChange} 
+        setErrorAlert={setErrorAlert} 
+      />
       <EventList events={events} />
     </div>
   );
- };
- 
- export default App;
+};
+
+export default App;
