@@ -40,16 +40,25 @@ const App = () => {
   // Handles changes in the number of events
   const handleNumberChange = (number) => {
     const newNumber = parseInt(number, 10) || 0; // Convert input to a number
-    setCurrentNOE(newNumber); // Update the state for the number of events
-  };
+    console.log("New number of events:", newNumber); // Debugging
+
+  if (newNumber < 1) {
+    console.error("Error: Number of events must be at least 1.");
+    setErrorAlert("Please enter a number greater than 0.");
+  } else {
+    setErrorAlert(""); // Clear error if valid input
+  }
+
+  setCurrentNOE(newNumber); // Update state
+};
 
   return (
     <div className="App">
       <h1>Meet App</h1>
       <div className="alerts-container">
-        {infoAlert.length ? <InfoAlert text={infoAlert} /> : null}
-        {warningAlert.length ? <WarningAlert text={warningAlert} /> : null}
-        {errorAlert.length ? <ErrorAlert text={errorAlert} /> : null}
+        {infoAlert && <InfoAlert text={infoAlert} />}
+        {warningAlert && <WarningAlert text={warningAlert} />}
+        {errorAlert && <ErrorAlert text={errorAlert} />}
       </div>
       <CitySearch
         allLocations={allLocations}
