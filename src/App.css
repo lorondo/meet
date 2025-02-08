@@ -60,29 +60,15 @@ input[type="number"] {
   box-shadow: 10px 10px 16px -12px rgba(0, 0, 0, 0.75);
 }
 
-#event-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center; /* Centers the events */
-  gap: 20px; /* Adds spacing between event cards */
-  padding: 0;
-  margin: 20px auto;
-  max-width: 1200px; /* Prevents it from being too wide */
-  list-style: none;
-}
-
-#event-list li {
-  width: 100%;
-  max-width: 400px; /* Ensures events aren't too wide */
-}
-
 .event {
-  background: white;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  border: 1px solid #ccc;
+  padding: 10px 15px;
+  margin-bottom: 10px;
   text-align: left;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  position: relative;
+  width: 100%;
+  max-width: 600px;
 }
 
 .alerts-container {
