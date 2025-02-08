@@ -45,9 +45,21 @@ const App = () => {
   return (
     <div className="App">
       <div className="alerts-container">
+<<<<<<< HEAD
         {infoAlert.length ? <InfoAlert text={infoAlert} /> : null}
         {errorAlert.length ? <ErrorAlert text={errorAlert} /> : null}
         {warningAlert.length ? <WarningAlert text={warningAlert} /> : null}
+=======
+<<<<<<< HEAD
+        {infoAlert && <InfoAlert text={infoAlert} />}
+        {warningAlert && <WarningAlert text={warningAlert} />}
+        {errorAlert && <ErrorAlert text={errorAlert} />}
+=======
+        {infoAlert.length ? <InfoAlert text={infoAlert} /> : null}
+        {errorAlert.length ? <ErrorAlert text={errorAlert} /> : null}
+        {warningAlert.length ? <WarningAlert text={warningAlert} /> : null}
+>>>>>>> parent of b2f19e7 (Added chart)
+>>>>>>> parent of 6452138 (Revert "hbehf")
       </div>
       <CitySearch
         allLocations={allLocations}
