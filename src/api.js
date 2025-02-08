@@ -1,27 +1,21 @@
 // src/api.js
 
+import NProgress from "nprogress";
+import "nprogress/nprogress.css"; // Import styles
 import mockData from './mock-data';
 
 /**
- *
- * @param {*} events:
- * The following function should be in the “api.js” file.
- * This function takes an events array, then uses map to create a new array with only locations.
- * It will also remove all duplicates by creating another new array using the spread operator and spreading a Set.
- * The Set will remove all duplicates from the array.
+ * Extracts unique locations from event data.
  */
 export const extractLocations = (events) => {
   const extractedLocations = events.map((event) => event.location);
-  const locations = [...new Set(extractedLocations)];
-  return locations;
+  return [...new Set(extractedLocations)];
 };
 
 /**
- *
- * This function will fetch the list of all events
+ * Fetches the list of all events.
  */
 export const getEvents = async () => {
-
   if (window.location.href.startsWith("http://localhost")) {
     return mockData;
   }
@@ -29,80 +23,128 @@ export const getEvents = async () => {
   if (!navigator.onLine) {
     const events = localStorage.getItem("lastEvents");
     NProgress.done();
-    return events?JSON.parse(events):[];
+    return events ? JSON.parse(events) : [];
   }
 
   const token = await getAccessToken();
 
   if (token) {
     removeQuery();
-    const url = "https://un1axvwmqg.execute-api.us-east-2.amazonaws.com/dev/api/get-events" + "/" + token;
-    const response = await fetch(url);
-    const result = await response.json();
-    if (result) {
-      NProgress.done();
-      localStorage.setItem("lastEvents", JSON.stringify(result.events));
-      return result.events;
-    } else return null;
-  }
-};
-
-
-export const getAccessToken = async () => {
-  const accessToken = localStorage.getItem('access_token');
-  const tokenCheck = accessToken && (await checkToken(accessToken));
-
-  if (!accessToken || tokenCheck.error) {
-    await localStorage.removeItem("access_token");
-    const searchParams = new URLSearchParams(window.location.search);
-    const code = await searchParams.get("code");
-    if (!code) {
-      const response = await fetch(
-        "https://un1axvwmqg.execute-api.us-east-2.amazonaws.com/dev/api/get-auth-url"
-      );
+    const url = `https://un1axvwmqg.execute-api.us-east-2.amazonaws.com/dev/api/get-events?access_token=${token}`;
+    
+    try {
+      const response = await fetch(url);
       const result = await response.json();
-      const { authUrl } = result;
-      return (window.location.href = authUrl);
+      if (result && result.events) {
+        NProgress.done();
+        localStorage.setItem("lastEvents", JSON.stringify(result.events));
+        return result.events;
+      }
+      return [];
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      return [];
     }
-    return code && getToken(code);
   }
-  return accessToken;
 };
 
+/**
+ * Retrieves the access token, refreshing if necessary.
+ */
+export const getAccessToken = async () => {
+  const accessToken = localStorage.getItem("access_token");
+
+  if (accessToken) {
+    const tokenCheck = await checkToken(accessToken);
+    if (!tokenCheck.error) {
+      return accessToken;
+    }
+  }
+
+  console.warn("Invalid or expired access token. Re-authenticating...");
+  localStorage.removeItem("access_token");
+
+  const searchParams = new URLSearchParams(window.location.search);
+  const code = searchParams.get("code");
+
+  if (!code) {
+    return getAuthUrl(); // Redirect to Google OAuth
+  }
+
+  return await getToken(code);
+};
+
+/**
+ * Checks if an access token is valid.
+ */
 const checkToken = async (accessToken) => {
-  const response = await fetch(
-    `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`
-  );
-  const result = await response.json();
-  return result;
-};
-
-const removeQuery = () => {
-  let newurl;
-  if (window.history.pushState && window.location.pathname) {
-    newurl =
-      window.location.protocol +
-      "//" +
-      window.location.host +
-      window.location.pathname;
-    window.history.pushState("", "", newurl);
-  } else {
-    newurl = window.location.protocol + "//" + window.location.host;
-    window.history.pushState("", "", newurl);
+  try {
+    const response = await fetch(
+      `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`
+    );
+    if (!response.ok) {
+      throw new Error(`Token verification failed with status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error checking token:", error);
+    return { error: true };
   }
 };
 
-// getToken without try...catch
+/**
+ * Redirects the user to authenticate and obtain a new access token.
+ */
+const getAuthUrl = async () => {
+  try {
+    const response = await fetch(
+      "https://un1axvwmqg.execute-api.us-east-2.amazonaws.com/dev/api/get-auth-url"
+    );
+    const result = await response.json();
+    if (result.authUrl) {
+      window.location.href = result.authUrl;
+    } else {
+      throw new Error("Authentication URL not received.");
+    }
+  } catch (error) {
+    console.error("Error retrieving auth URL:", error);
+  }
+};
 
+/**
+ * Removes authentication query parameters from the URL.
+ */
+const removeQuery = () => {
+  const newurl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+  window.history.pushState("", "", newurl);
+};
+
+/**
+ * Fetches an access token using the authorization code.
+ */
 const getToken = async (code) => {
-  const encodeCode = encodeURIComponent(code);
-  const response = await fetch(
-    "https://un1axvwmqg.execute-api.us-east-2.amazonaws.com/dev/api/token" + "/" + encodeCode
-  );
-  const { access_token } = await response.json();
-  access_token && localStorage.setItem("access_token", access_token);
+  try {
+    const encodeCode = encodeURIComponent(code);
+    const response = await fetch(
+      `https://un1axvwmqg.execute-api.us-east-2.amazonaws.com/dev/api/token/${encodeCode}`
+    );
 
-  return access_token;
+    if (!response.ok) {
+      throw new Error(`Failed to fetch token. Status: ${response.status}`);
+    }
+
+    const { access_token } = await response.json();
+    
+    if (access_token) {
+      localStorage.setItem("access_token", access_token);
+      return access_token;
+    } else {
+      throw new Error("No access token received.");
+    }
+  } catch (error) {
+    console.error("Error fetching token:", error);
+    return null;
+  }
 };
 
 // getToken with try...catch
