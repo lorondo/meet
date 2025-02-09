@@ -8,9 +8,9 @@ const CitySearch = ({ allLocations, setCurrentCity, setInfoAlert }) => {
 
   const handleInputChanged = (event) => {
     const value = event.target.value;
-    const filteredLocations = allLocations ? allLocations.filter((location) => {
-      return location.toUpperCase().indexOf(value.toUpperCase()) > -1;
-    }) : [];
+    const filteredLocations = Array.isArray(allLocations) ? allLocations.filter((location) => {
+      return location.toLowerCase().indexOf(value.toLowerCase()) > -1;
+    }) : [];    
  
  
     setQuery(value);
@@ -35,7 +35,9 @@ const CitySearch = ({ allLocations, setCurrentCity, setInfoAlert }) => {
   };
 
   useEffect(() => {
-    setSuggestions(allLocations);
+    if (Array.isArray(allLocations)) {
+      setSuggestions(allLocations);
+    }
   }, [allLocations]);
   
   return (

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ErrorAlert } from './Alert';
 
-const NumberOfEvents = ({ onNumberChange, setErrorAlert }) => {
+const NumberOfEvents = ({ setCurrentNOE, setErrorAlert }) => {
   // state to track the value of the textbox
   const [number, setNumber] = useState(32); //Default value is 32
   const [errorAlert, setError] = useState('');
@@ -10,7 +10,7 @@ const NumberOfEvents = ({ onNumberChange, setErrorAlert }) => {
   const handleChange = (e) => {
     const value = e.target.value;
     setNumber(value);
-    onNumberChange(value); // Trigger the mock function with the updated value
+    setCurrentNOE(value); // Trigger the mock function with the updated value
  
     let infoText;
     if (isNaN(value) || value <= 0) { // Check if value is not a number or zero or less

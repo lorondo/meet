@@ -12,26 +12,28 @@ const CityEventsChart = ({ allLocations, events }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    console.log("Events:", events);
+    console.log("All Locations:", allLocations);
     setData(getData());
-  }, [`${events}`]);
+  }, [events, allLocations]);
 
   const getData = () => {
     const data = allLocations.map((location) => {
-      const count = events.filter((event) => event.location === location).length
-      const city = location.split(', ')[0]
+      const count = events.filter((event) => event.location === location).length;
+      const city = location.split((/, | - /))[0];
       return { city, count };
-    })
+    });
     return data;
   };
 
   return (
-    <ResponsiveContainer width="99%" height={400}>
+    <ResponsiveContainer width={500} height={400}>
       <ScatterChart
         margin={{
           top: 20,
           right: 20,
-          bottom: 20,
-          left: 20,
+          bottom: 60,
+          left: -30,
         }}
       >
         <CartesianGrid />

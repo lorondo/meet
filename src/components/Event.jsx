@@ -11,8 +11,8 @@ const Event = ({ event }) => {
   return (
     <div className="event">
       <h2>{event.summary}</h2>
-      <p>{event.start.dateTime}</p>
-      <p>{event.location}</p>
+      <p>{event.start?.dateTime || "No start time available"}</p>
+      <p>{event.location || "No location provided"}</p>
       <button className="details-btn" onClick={toggleDetails}>
         {showDetails ? 'hide details' : 'show details'}
       </button>

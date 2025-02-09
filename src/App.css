@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Roboto:500");
+@import url("https://fonts.googleapis.com/css?family=Roboto:500&display=swap");
 
 body {
   margin: 0;
@@ -6,6 +6,8 @@ body {
   font-family: "Roboto", sans-serif;
   display: flex;
   justify-content: center; /* Centers the entire app */
+  align-items: center; /* Centers vertically */
+  height: 100vh; /* Ensure the body takes up the full height */
 }
 
 .App {
@@ -17,6 +19,7 @@ body {
   flex-direction: column;
   align-items: center;
   width: 100%;
+  height: 100vh; /* Ensure full height for proper flexbox alignment */
 }
 
 ul {
@@ -34,6 +37,7 @@ input[type="number"] {
   margin-bottom: 20px;
   width: 100%;
   max-width: 300px;
+  box-sizing: border-box; /* Ensures padding doesn't increase width */
 }
 
 .city {
@@ -55,8 +59,9 @@ input[type="number"] {
   max-width: 300px;
   position: absolute;
   top: 45px;
-  z-index: 2;
+  z-index: 1001; /* Ensure it's above other elements */
   font-size: 14px;
+  background: white; /* Ensure visibility */
   box-shadow: 10px 10px 16px -12px rgba(0, 0, 0, 0.75);
 }
 
@@ -69,6 +74,7 @@ input[type="number"] {
   position: relative;
   width: 100%;
   max-width: 600px;
+  background-color: white; /* Ensure contrast */
 }
 
 .alerts-container {
@@ -79,6 +85,10 @@ input[type="number"] {
   width: 100%;
   max-width: 300px;
   z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.9); /* Ensure visibility */
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .chart-container {
@@ -93,11 +103,18 @@ input[type="number"] {
     padding: 2% 3%;
   }
 
-  .event, #city-search, input[type="text"], input[type="number"] {
+  .event, 
+  #city-search, 
+  input[type="text"], 
+  input[type="number"] {
     max-width: 90%;
   }
 
   .alerts-container {
     width: 90%;
+  }
+
+  .suggestions {
+    max-width: 90%; /* Ensure it doesn’t get too wide on smaller screens */
   }
 }
