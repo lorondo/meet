@@ -5,21 +5,19 @@ body {
   padding: 0;
   font-family: "Roboto", sans-serif;
   display: flex;
-  justify-content: center; /* Centers the entire app */
-  align-items: center; /* Centers vertically */
-  height: 100vh; /* Ensure the body takes up the full height */
+  flex-direction: column;
+  min-height: 100vh; /* Allows content to expand */
 }
 
 .App {
   text-align: center;
   padding: 2% 5%;
-  max-width: 1200px;
-  margin: auto;
+  max-width: none; /* Allow full width */
+  width: 100%;
+  height: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 100%;
-  height: 100vh; /* Ensure full height for proper flexbox alignment */
+  align-items: stretch; /* Allow stretching */
 }
 
 ul {
@@ -36,12 +34,8 @@ input[type="number"] {
   height: 38px;
   margin-bottom: 20px;
   width: 100%;
-  max-width: 300px;
-  box-sizing: border-box; /* Ensures padding doesn't increase width */
-}
-
-.city {
-  width: 250px;
+  max-width: 500px; /* Adjusted for better responsiveness */
+  box-sizing: border-box;
 }
 
 #city-search {
@@ -51,17 +45,17 @@ input[type="number"] {
   margin: auto;
   position: relative;
   width: 100%;
-  max-width: 400px;
+  max-width: 500px; /* Adjusted */
 }
 
 .suggestions {
   width: 100%;
-  max-width: 300px;
+  max-width: 400px;
   position: absolute;
   top: 45px;
-  z-index: 1001; /* Ensure it's above other elements */
+  z-index: 1001;
   font-size: 14px;
-  background: white; /* Ensure visibility */
+  background: white;
   box-shadow: 10px 10px 16px -12px rgba(0, 0, 0, 0.75);
 }
 
@@ -74,7 +68,7 @@ input[type="number"] {
   position: relative;
   width: 100%;
   max-width: 600px;
-  background-color: white; /* Ensure contrast */
+  background-color: white;
 }
 
 .alerts-container {
@@ -85,16 +79,19 @@ input[type="number"] {
   width: 100%;
   max-width: 300px;
   z-index: 1000;
-  background-color: rgba(255, 255, 255, 0.9); /* Ensure visibility */
+  background-color: rgba(255, 255, 255, 0.9);
   padding: 10px;
   border-radius: 4px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.chart-container {
+.charts-container {
+  display: grid;
   width: 100%;
-  max-width: 800px; /* Ensures chart isn't too wide */
+  max-width: 1000px;
   margin: 20px auto;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
 }
 
 /* RESPONSIVE DESIGN */
@@ -115,6 +112,10 @@ input[type="number"] {
   }
 
   .suggestions {
-    max-width: 90%; /* Ensure it doesn’t get too wide on smaller screens */
+    max-width: 90%;
+  }
+
+  .charts-container {
+    grid-template-columns: 1fr;
   }
 }
